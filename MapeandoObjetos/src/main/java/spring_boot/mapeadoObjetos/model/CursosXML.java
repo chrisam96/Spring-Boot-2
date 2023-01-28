@@ -20,18 +20,17 @@ import javax.xml.bind.annotation.XmlRootElement;
       	</dependency>
  */
 @XmlRootElement
-public class Cursos {
-	
+public class CursosXML {
 	private String nombre;
 	private String horario;
 	private int duracion;
 	
-	public Cursos() {
+	public CursosXML() {
 	}
 	
 	
 
-	public Cursos(String nombre, String horario, int duracion) {
+	public CursosXML(String nombre, String horario, int duracion) {
 		this.nombre = nombre;
 		this.horario = horario;
 		this.duracion = duracion;
@@ -63,13 +62,4 @@ public class Cursos {
 		this.duracion = duracion;
 	}
 
-
-
-	@Override
-	public String toString() {
-		return "Cursos [nombre=" + nombre + ", horario=" + horario + ", duracion=" + duracion + "]";
-	}
-	
-	
-	
 }

@@ -4,12 +4,12 @@
 /.settings
 /bin/*
 */target/
-*/.mvn
+# */.mvn
 *.class
 *prefs
 *.rar
 *.lst
 *.MF
-maven-wrapper.*
-mvnw
-mvnw.*
+# maven-wrapper.*
+# mvnw
+# mvnw.*
