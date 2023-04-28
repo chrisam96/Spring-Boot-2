@@ -110,7 +110,7 @@ public class SecurityConfig {
 		return jdbcDetails;
 	}*/
 		
-	/*	POLITICAS DE ACCESO A RECURSOS
+	/*	POLITICAS DE SEGURIDAD o DE ACCESO A RECURSOS
 	 * 
 	 * 	A. Explicación de CSRF()
 	 * 
@@ -204,6 +204,7 @@ public class SecurityConfig {
 	 * 
 	 * 
 	 */
+	//DEFINICION DE POLITICAS DE SEGURIDAD o ACCESO A RECURSOS
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf()
