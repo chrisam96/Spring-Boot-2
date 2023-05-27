@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: servidor-zuul
+server:
+  port: 7001
+# Propiedades del server ^^^^^
+
+# Propiedades de Zuul
+
+# >> En el archivo properties o .yml: 
+# A traves de la propiedad zuul.routes, se indican las rutas 
+# de los servicios que centraliza y los mapeos a direcciones 
+# reales URL (a traves de la propiedad: url) 
+# o virtuales via Eureka (a traves de la propiedad: serviceld).
+#
+# Las propiedades de Zuul tienen la siguiente estructura
+# zuul.routes.[id].path
+# zuul.routes.[id].serviceId||url
+# 
+# Donde::
+# path: Es el path/direccion que intercepta el servidor Zuul 
+# serviceId: Servicio al que se va a redirigir usando Eureka
+# url: Servicio donde se va a redirigir usando su URL
+
+zuul:
+#  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+  routes:
+      serv-vuelos: # --> Servicio de vuelos
+        path: /svuelos/** # path/direccion que sera interceptada
+        serviceId: servicio-vuelos  # servicio al que se va a redirigir usando Eureka
+        #url: http://localhost:9000 # servicio donde se va a redirigir usando su URL
+      serv-hoteles: # --> Servicio de hoteles
+        path: /shoteles/** # path/direccion que sera interceptada
+        serviceId: servicio-hoteles # servicio al que se va a redirigir usando Eureka
+      serv-reservas: # --> Servicio de reservas
+        path: /sreservas/** # path/direccion que sera interceptada
+        serviceId: servicio-reservas # servicio al que se va a redirigir usando Eureka
+
+# Propiedad de Eureka      
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

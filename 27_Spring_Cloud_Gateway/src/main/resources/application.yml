@@ -1,0 +1,70 @@
+server:
+  port: 7000
+spring:
+  application:
+    name: servidor-gateway
+  cloud:
+    gateway:
+      routes:
+      - id: serv-vuelos
+        # Se usa "lb" cuando se accede a tráves de Eureka
+        uri: lb://servicio-vuelos # http://localhost:8080
+        predicates:
+        - Path=/svuelos/**
+        filters:
+        - RewritePath=/svuelos/*, /
+        
+      - id: serv-hoteles
+        uri: lb://servicio-hoteles # http://localhost:8080
+        predicates:
+        - Path=/shoteles/**
+        filters:
+        - RewritePath=/shoteles/*, /
+        
+      - id: serv-reservas
+        uri: lb://servicio-reservas # http://localhost:8080
+        predicates:
+        - Path=/sreservas/**
+        filters:
+        - RewritePath=/sreservas/*, /
+          
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+#  [[[ Arquitectura ]]]
+# 
+# > :::spring.cloud.gateway.routes::: 
+# A traves de los enrutados (routing) se
+# define lo que se debe hacer con una peticion especifica.
+# 
+# > ::: id :::
+# Identificador del enrutado
+# 
+# > ::: uri :::
+# Direccion del servicio al que se va a redirigir 
+# 
+# NOTA::
+# Para dirigir peticiones a ciertas URI a traves de Eureka 
+# (y otras proxy) en vez de "http" se usa el protocolo de "lb".
+# 
+# > ::: predicates :::
+# El predicado (predicates) establece la condicion 
+# (path, cookies, encabezados,etc.), que debe cumplir una peticion 
+# para ser enrutada a un determinado destino.
+# 
+# NOTA::
+# Gateway suele concadenar el valor de "Path" despues del valor de
+# la URI en su url (antes de hacer el redireccionamiento). 
+# Para quitar ello, se le debe agregar el filtro de RewritePath.
+# 
+#  filters:
+#    RewritePath: [valor1], [valor2]
+# 
+# > ::: filters :::
+# Antes de dirigir la peticion al destino, se
+# le pueden aplicar uno o varios filtros que
+# modifiquen alguna caracteristica de la peticion.
+# >
+# */

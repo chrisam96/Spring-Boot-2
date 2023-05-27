@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import model.Contacto;
 import service.AgendaService;
 
+/*Notacion @CrossOrigin
+ * 
+ * Indica que orígenes (de URL) se quieren admitir en el controller. 
+ * Al usar * se permiten peticiones desde cualquier URL
+ */
 @CrossOrigin(origins = "*")
 @RestController
 public class AgendaController {
