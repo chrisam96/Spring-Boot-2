@@ -2,7 +2,7 @@ spring:
   application:
     name: servidor-zuul
 server:
-  port: 7001
+  port: 7000
 # Propiedades del server ^^^^^
 
 # Propiedades de Zuul
