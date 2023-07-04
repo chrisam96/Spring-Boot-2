@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: servidor-gateway
+  cloud:
+    config:
+      enabled: true
+# Localizacion del Spring Cloud Config      
+#      uri: http://localhost:8888 # Para < Spring Boot 2.4
+  config:
+    import: configserver:http://localhost:8888
+      
+# [[[Configuracion del CLIENTE en el archivo application]]]
+# 
+# > En cada archivo de configuracion solo tienen que ir 2 propiedades las 
+# cuales son el nombre (spring.application.name) y la ruta de config. remota. 
+# 
+# > Dependiendo de la version de Spring Boot varia la propiedad que
+# establece la localizacion del repositorio:
+# 
+#  - Si es <= SB 2.4:  
+#  spring.cloud.config.uri
+# 
+#  - Si es > SB 2.4:
+#  spring.cloud.config.enabled= true
+#  
+#  - Si es >= SB 2.7
+#  spring.config.import= configserver:http://[_URI_]
+#  spring.cloud.config.enabled= true
