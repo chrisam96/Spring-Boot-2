@@ -1,0 +1,5 @@
+FROM openjdk:11
+ADD contactos.jar contactos-docker.jar
+ENV servidorBD 192.168.1.5
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/contactos-docker.jar"]

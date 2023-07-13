@@ -1,0 +1,278 @@
+APUNTES DE DOCKER
+
+
+¿Qué es un contenedor?
+• Sistema que permite empaquetar una aplicación, junto con toda la infraestructura necesaria para su funcionamiento, facilitando su despliegue
+• Los contenedores comparten el sistema operativo del host donde se ejecutan
+• Más ligero, eficiente y portable que el sistema de máquinas virtuales
+
+[Entorno de ejecución para contenedores]
+
+Mientras que con el uso de las máquinas virtuales es más engorroso y pesado de trabajar ya que requiere de un Sistema Operativo independiente de su anfitrion, además de consumir los recursos de este, docker se ejecuta en el entorno del sistema operativo anfitrion (host) sin necesidad de instalar otro sistema operativo a través del Docker Engine, que permite ejecutar los contenedores.
+
+Virtual Machine
+-------------------
+| VM1 | VM2 | VM3 |
+-------------------
+| SO1 | SO1 | SO3 |
+-------------------
+| SO Propietario  |
+-------------------
+| 		HOST 	  |
+-------------------
+
+Docker 
+-------------------------
+| Cont1 | Cont2 | Cont3 |
+-------------------------
+| 	  Docker Engine 	|
+-------------------------
+| 	  SO Propietario  	|
+-------------------------
+|		  HOST 	 	    |
+-------------------------
+
+[Microservicios en contenedores]
+
+• Al incluir un microservicio en un contenedor, no tenemos que preocuparnos de instalar runtime de Java (JRE) en la máquina destinataria.
+
+[Imagenes y contenedores]
+
+Imagen: Paquete de software donde esta integrado tanto el programa como los softwares necesarios para su funcionamiento.
+
+Contenedor: Instancia de una imagen.
+
+((Imagen))
+----------
+|App +   |-------->Contenedor 1
+|        |
+|Runtime |-------->Contenedor 2
+|        |
+|--------|-------->Contenedor 3
+
+La similitud de una imagen y un Contenedor es igual que la de una clase a un objeto. Por lo tanto:
+
+Imagen ===> Contenedor
+
+Clase  ===> Objeto
+
+=============================================================================
+=============================================================================
+
+COMANDOS BASICOS
+
+
+Docker puede manipularse desde línea de comando. El "identificador" de una imagen docker se componde de: [repository-name:tag].
+
+Por lo tanto:::		identificador == repostiry-name:tag
+-----------------------------------------------------------------------------
+docker -v 
+docker --version
+
+Expli: Para saber la versión de Docker
+----------------------------------------------------------------------------
+docker images
+
+Expli: Muestra una lista de todas las imágenes existentes en la máquina
+----------------------------------------------------------------------------
+dokcer ps
+
+Expli: Muestra los contenedores en ejecución. 
+
+-----------------------------------------------------------------------------
+docker ps -a
+
+Expli: Muestra los contenedores tanto en ejecución como los detenidos.
+----------------------------------------------------------------------------
+docker run [nombre-imagen|image-id|repository-name:tag]
+
+Expli: Crea una nueva instancia de la imagen (contenedor) y la ejecuta. Si la imagen no existe en local, la descarga del docker hub.
+----------------------------------------------------------------------------
+docker rmi [nombre-imagen|image-id|repository-name:tag]
+
+Expli: Elimina la imagen especificada.
+----------------------------------------------------------------------------
+docker rmi -f [nombre-imagen|image-id|repository-name:tag]
+
+Expli: Si no se puede borrar la imagen especificada es porque hay contenedores en ejecución; se puede forzar el cierre para su eliminacion.
+----------------------------------------------------------------------------
+docker rm [nombre-contenedor|id-contenedor]
+
+Expli: Elimina un contendor parado.
+----------------------------------------------------------------------------
+docker rm $(docker ps -aq)
+
+Expli: Si se quieren borrar todos los contenedores
+-----------------------------------------------------------------------------
+docker stop [nombre-contenedor|id-contenedor]
+
+Expli: Detiene la ejecución del contenedor
+-----------------------------------------------------------------------------
+
+=============================================================================
+=============================================================================
+
+ARCHIVO DOCKERFILE
+
+
+Contiene la información necesaria para que Docker pueda construir una imagen. Se compone de una serie de comandos con sus correspondientes valores.
+
+[Estructura del dockerfile]
+COMANDO1	valor
+COMANDO2	valor
+...
+COMANDO#	valor
+
+[Ejemplos de dockerfile]
+FROM openjdk:8-jdk-alpine
+ADD cliente-origen.jar client-destino-docker.jar
+EXPOSE 8080
+
+FROM openjdk:11
+ADD crud-libros-origen.jar crudlibros-destino-docker.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/crudlibros-destino-docker.jar"]
+
+[Principales comandos]
+-----------------------------------------------------------------------------
+FROM
+Indica la imagen base de la que se parte
+-----------------------------------------------------------------------------
+ADD 
+Agrega archivos que se van a incluir a la imagen Docker.
+Sigue la estructura: 
+	ADD ruta_origen ruta_destino
+
+
+Ejemplo: 
+	ADD servicio.jar miservicio.jar
+
+NOTA:
+	ruta_origen  = Ruta y nombre donde se encuentra el archivo
+	ruta_destino = Ruta y renombre donde se dejara al archivo dentro del contenedor Docker
+-----------------------------------------------------------------------------
+EXPOSE
+Número de puerto por el que el contenedo será accesible al exterior:
+
+
+Ejemplo:
+	EXPOSE 8080
+-----------------------------------------------------------------------------
+ENTRYPOINT
+Comando que debe ser ejecutado al lanzar el contenedor.
+
+
+Ejemplo:
+	ENTRYPOINT ["comando-ejecutable", "paramI", "param2", ...]
+	ENTRYPOINT ["java","-jar","/miservicio.jar"]
+-----------------------------------------------------------------------------
+=============================================================================
+=============================================================================
+
+CONSTRUCCION DE LA IMAGEN
+
+• Para construir la imagen, utilizamos el comando build con el siguiente formato:
+	docker build -t [nombre_imagen] [ruta_dockerfile]
+
+Donde:
+	nombre_imagen = El nombre que le daremos a la imagen
+	ruta_dockerfile = La ruta donde se ubica el dockerfile
+
+•≥ Si escribimos el comando en la misma carpeta donde está dockerfile:
+	docker build -t [nombre-imagen] .
+
+Donde:
+	nombre_imagen = El nombre que le daremos a la imagen
+	. = Indica que el dockerfile esta en el directorio actual
+
+NOTA: Una vez construida, aparece en nuestro listado de imágenes con docker images
+
+=============================================================================
+=============================================================================
+
+COMANDOS AUXILIARES NO RELACIONADOS A DOCKER
+-----------------------------------------------------------------------------
+Obtener IP local
+
+	-Linux: ifconfig
+	-Windows: ipconfig
+-----------------------------------------------------------------------------
+Reconstruccion del .jar (recompilacion de un proyecto)
+
+Mediante click derecho > Run As... > "Maven Build ..." (opcion 3) > agregar el comando "deploy"
+=============================================================================
+=============================================================================
+CREACIÓN Y EJECUCIÓN DE UN CONTENEDOR
+
+Para crea contenedores a partir de una imagen y ponerlos en ejecución utilizamos el comando "run".
+
+> En el caso de un servicio, deberá mapearse el puerto del contenedor a un puerto de la máquina física:
+	docker run -p [puerto_host]:[puerto_contenedor] [nombre_imagen]
+
+Por ejemplo, para crear un contenedor mapeado al puerto 9000 de la máquina física:
+	docker run -p 9000:8080 imagenl
+=============================================================================
+=============================================================================
+DOCKERHUB
+
+Repositorio público en la nube que cuenta con miles de imágenes disponibles para libre uso.
+
+› Es posible subir nuestras imágenes a docker hub para poder desplegarlas en cualquier equipo.
+
+[Creacion de un repositorio]
+
+Para subir imágenes a docker hub, debemos crear un repositorio en el que serán guardadas
+
+[Subida de imagenes a docker hub]
+
+Se deberán seguir los siguientes pasos:
+	I. Autenticación en docker hub
+		docker login -u [username]
+	
+	II. Etiquetar la imagen
+		docker tag [nombre-imagen] [username]/repositorio:etiqueta
+	
+	III. Subir la imagen
+		docker push [username]/repositorio:etiqueta
+
+[Descargar imagen de dockerhub desde la linea de comandos]
+
+	docker pull [username]/[repositorio]:[tag]
+
+[Descargar contenedor de una imagen de dockerhub desde la linea de comandos]
+
+Al generar un contenedor de alguna imagen en dockerhub, automaticamente se descarga la imagen. El comando es:
+
+docker run -p puerto_host:puerto_contenedor [username]/[repositorio]:[tag]
+
+=============================================================================
+=============================================================================
+EJERCICIO #01
+
+docker run -p 9000:9004 imagencontactos
+
+docker login -u chrisagueros
+
+docker tag imagencontactos chrisagueros/imagenes-docker-test:contactos
+
+docker push chrisagueros/imagenes-docker-test:contactos
+
+Firma de la subida de la imagen::
+contactos: digest: sha256:aad4a1284df9bbd9ae544f705decc476683d2e19e2a1f167d200394d95e44933 size: 2007
+
+************************************************************************
+EJERCICIO #02
+
+docker build -t imagencontactos-2:con-var-entorno .
+
+docker run -p 9001:9004 imagencontactos-2:con-var-entorno
+
+docker tag imagencontactos-2:con-var-entorno chrisagueros/imagenes-docker-test:contactos-var-entorno
+
+docker push chrisagueros/imagenes-docker-test:contactos-var-entorno
+
+::Firma de la subida de la imagen::
+contactos-var-entorno: digest: sha256:86834ba67d2068a0accd5e7f73eb5e1a1ccc5b0e80a42d0cfcf9f1f422c28dda size: 2007
+
+LINK PARA CONSULTAR COMANDOS DEL DOCKERFILE
+https://colaboratorio.net/davidochobits/sysadmin/2018/crear-imagenes-medida-docker-dockerfile/
