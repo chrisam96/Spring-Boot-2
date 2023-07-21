@@ -152,7 +152,7 @@ NOTA:
 	ruta_destino = Ruta y renombre donde se dejara al archivo dentro del contenedor Docker
 -----------------------------------------------------------------------------
 EXPOSE
-Número de puerto por el que el contenedo será accesible al exterior:
+Número de puerto por el que el contenedor será accesible al exterior:
 
 
 Ejemplo:
@@ -248,6 +248,7 @@ docker run -p puerto_host:puerto_contenedor [username]/[repositorio]:[tag]
 =============================================================================
 =============================================================================
 EJERCICIO #01
+(Carpeta: dockerfile - original)
 
 docker run -p 9000:9004 imagencontactos
 
@@ -262,6 +263,7 @@ contactos: digest: sha256:aad4a1284df9bbd9ae544f705decc476683d2e19e2a1f167d20039
 
 ************************************************************************
 EJERCICIO #02
+(Carpeta: dockerfile - con variable de entorno)
 
 docker build -t imagencontactos-2:con-var-entorno .
 
@@ -274,5 +276,26 @@ docker push chrisagueros/imagenes-docker-test:contactos-var-entorno
 ::Firma de la subida de la imagen::
 contactos-var-entorno: digest: sha256:86834ba67d2068a0accd5e7f73eb5e1a1ccc5b0e80a42d0cfcf9f1f422c28dda size: 2007
 
-LINK PARA CONSULTAR COMANDOS DEL DOCKERFILE
+************************************************************************
+EJERCICIO #03
+(Carpeta: dockerfile - con var entorno_linea comandos- Docker)
+
+docker build -t imagencontactos-3 .
+	
+docker run -e servidorBD=192.168.1.2  -p 9002:9004 imagencontactos-3
+docker run -e servidorBD=192.168.1.2 -e VAR1=1 -p 9003:9004 imagencontactos-3
+
+docker tag imagencontactos-3 chrisagueros/imagenes-docker-test:contactos-var-ento-linea-comandos
+
+docker push chrisagueros/imagenes-docker-test:contactos-var-ento-linea-comandos
+
+contactos-var-ento-linea-comandos: digest: sha256:38e043fb8b1b926ae0409ddb1f95e0ee03790512c1c40ca957fa5c1f6ea8b64e size: 2007
+
+************************************************************************
+EJERCICIO #04
+(Carpeta: dockerfile - env_file)
+
+docker run --env-file ./env.list -p 9005:9004 imagencontactos-3
+
+************************************************************************
 https://colaboratorio.net/davidochobits/sysadmin/2018/crear-imagenes-medida-docker-dockerfile/
